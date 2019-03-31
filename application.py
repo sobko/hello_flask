@@ -1,11 +1,20 @@
 from flask import Flask, render_template, request, url_for, redirect
+from werkzeug.utils import secure_filename
+import os
+
+UPLOAD_FOLDER='/home/ubuntu/workspace/fileupload/files/'
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    print("yo, index")
     if request.method == "POST":
+        file = request.files['file']
+        print(file.filename)
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
         name = request.form.get("name")
         print(name)
         if request.form.get("quest") == "grail":
